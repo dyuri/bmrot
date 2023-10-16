@@ -55,13 +55,15 @@ func (d *Descriptor) Rotate() {
 	d.Common.ScaleW, d.Common.ScaleH = d.Common.ScaleH, d.Common.ScaleW
 	lh := 0
 	for _, char := range d.Chars {
+		if lh < char.Width {
+			lh = char.Width
+		}
+	}
+	for _, char := range d.Chars {
 		char.X, char.Y = d.Common.ScaleW-char.Y-char.Height, char.X
-		char.XOffset, char.YOffset = char.YOffset, char.XOffset
+		char.XOffset, char.YOffset = char.YOffset, (lh-char.Width)/2
 		char.Width, char.Height = char.Height, char.Width
 		char.XAdvance = char.Width + char.XOffset
-		if lh < char.Height {
-			lh = char.Height
-		}
 		d.Chars[char.ID] = char
 	}
 	d.Common.LineHeight = lh
